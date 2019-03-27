@@ -10,17 +10,19 @@ const client = new Discord.Client();
 client.commands = new Discord.Collection();
 
 // generate commands from data files
-	client.commands.set(commandData.name, commandFactory(commandData));
 const commandData = yaml.safeLoad(fs.readFileSync(config.yml, 'utf8'));
 commandData.forEach((commandDatum) => {
 	client.commands.set(commandDatum.name, commandFactory(commandDatum));
 });
 
+// link commands to config
+config.commands = commandData;
+
 client.on("ready", () => {
 	console.log('Ready');
 });
 
-// import configs 
+
 const prefix = config.prefix;
 client.on('message', message => {
 	// check for Prefix
@@ -33,7 +35,7 @@ client.on('message', message => {
 	// execute command
 	const command = client.commands.get(commandName);
 	if (command) {
-		command.execute(message, args, dynamicConfigs);
+		command.execute(message, args, config);
 	}
 });
 
