@@ -34,6 +34,14 @@ client.on('message', message => {
         client.commands.get('ping').execute(message, args);
     } else if (command === 'kiss') {
         client.commands.get('kiss').execute(message, args);
+    } else if (command === 'dead') {
+        client.commands.get('dead').execute(message, args);
+    } else if (command === 'owo') {
+        client.commands.get('owo').execute(message, args);
+    } else if (command === 'bread') {
+        client.commands.get('bread').execute(message, args);
+    } else if (command === 'thepite') {
+        client.commands.get('thepit').execute(message, args);
     }
 });
 
