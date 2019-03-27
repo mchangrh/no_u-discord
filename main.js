@@ -10,9 +10,10 @@ const client = new Discord.Client();
 client.commands = new Discord.Collection();
 
 // generate commands from data files
-yaml.safeLoad(fs.readFileSync(config.yml, 'utf8'))
-.forEach((commandData) => {
 	client.commands.set(commandData.name, commandFactory(commandData));
+const commandData = yaml.safeLoad(fs.readFileSync(config.yml, 'utf8'));
+commandData.forEach((commandDatum) => {
+	client.commands.set(commandDatum.name, commandFactory(commandDatum));
 });
 
 client.on("ready", () => {
@@ -32,7 +33,7 @@ client.on('message', message => {
 	// execute command
 	const command = client.commands.get(commandName);
 	if (command) {
-		command.execute(message, args);
+		command.execute(message, args, dynamicConfigs);
 	}
 });
 
