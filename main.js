@@ -52,6 +52,10 @@ client.on('message', message => {
     } else if (command === 'rawr') {
         client.commands.get('rawr').execute(message, args)
     }
+    // audio clips
+    else if (command === 'grr') {
+        client.commands.get('grr').execute(message, args);
+    }
 });
 
 client.login(config.token);
