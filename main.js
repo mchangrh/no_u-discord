@@ -3,13 +3,14 @@ const Discord = require("discord.js");
 const commandFactory = require('./command.js');
 const fs = require('fs');
 const yaml = require('js-yaml');
+const config = require("../config.json");
 
 // create client and collection
 const client = new Discord.Client();
 client.commands = new Discord.Collection();
 
 // generate commands from data files
-yaml.safeLoad(fs.readFileSync('./data/text_commands.yml', 'utf8'))
+yaml.safeLoad(fs.readFileSync(config.yml, 'utf8'))
 .forEach((commandData) => {
 	client.commands.set(commandData.name, commandFactory(commandData));
 });
@@ -29,7 +30,6 @@ client.on("ready", () => {
 });
 
 // import configs 
-const config = require("./config.json");
 const prefix = config.prefix;
 client.on('message', message => {
 	// check for Prefix
