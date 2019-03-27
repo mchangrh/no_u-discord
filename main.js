@@ -1,9 +1,9 @@
 // imports
-const Discord = require("discord.js");
+const Discord = require('discord.js');
 const commandFactory = require('./command.js');
 const fs = require('fs');
 const yaml = require('js-yaml');
-const config = require("../config.json");
+const config = require('../config.json');
 
 // create client and collection
 const client = new Discord.Client();
@@ -18,7 +18,7 @@ commandData.forEach((commandDatum) => {
 // link commands to config
 config.commands = commandData;
 
-client.on("ready", () => {
+client.on('ready', () => {
 	console.log('Ready');
 });
 
