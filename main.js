@@ -9,21 +9,20 @@ const client = new Discord.Client();
 client.commands = new Discord.Collection();
 
 // generate commands from data files
-try {
-	const textCommands = yaml.safeLoad(fs.readFileSync('./data/text_commands.yml', 'utf8'));
-	textCommands.forEach((commandData) => {
-		client.commands.set(commandData.name, commandFactory(commandData));
-	});
-} catch (err) {
-	console.log(err);
-}
+yaml.safeLoad(fs.readFileSync('./data/text_commands.yml', 'utf8'))
+.forEach((commandData) => {
+	client.commands.set(commandData.name, commandFactory(commandData));
+});
 
 // import all command files
-const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'));
-for (const file of commandFiles) {
+fs.readdirSync('./commands')
+.filter((file) => {
+	return file.endsWith('.js');
+})
+.forEach((file) => {
 	const command = require(`./commands/${file}`);
 	client.commands.set(command.name, command);
-}
+});
 
 client.on("ready", () => {
 	console.log('Ready');
