@@ -11,3 +11,7 @@
   type: 'audio'
   data: './assets/jess-grr.mp3'
   extraData: 'grr.mp3'
+- name: 'help'
+  description: 'Displays a list of all available commands'
+  type: 'custom'
+  data: './commands/help.js'

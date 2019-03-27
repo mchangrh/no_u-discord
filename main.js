@@ -15,16 +15,6 @@ yaml.safeLoad(fs.readFileSync(config.yml, 'utf8'))
 	client.commands.set(commandData.name, commandFactory(commandData));
 });
 
-// import all command files
-fs.readdirSync('./commands')
-.filter((file) => {
-	return file.endsWith('.js');
-})
-.forEach((file) => {
-	const command = require(`./commands/${file}`);
-	client.commands.set(command.name, command);
-});
-
 client.on("ready", () => {
 	console.log('Ready');
 });
