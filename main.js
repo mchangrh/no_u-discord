@@ -17,23 +17,23 @@ for (const file of commandFiles) {
 const config = require("./config.json");
 
 client.on("ready", () => {
-    console.log('Ready');
+	console.log('Ready');
 });
 
 const prefix = config.prefix;
 client.on('message', message => {
-    // check for Prefix
-    if (!message.content.startsWith(prefix) || message.author.bot) return;
+	// check for Prefix
+	if (!message.content.startsWith(prefix) || message.author.bot) return;
 
-    // strip args and commands
+	// strip args and commands
 	const args = message.content.slice(prefix.length).split(/ +/);
-    const commandName = args.shift().toLowerCase();
-    
-    // execute command
-    const command = client.commands.get(commandName);
-    if (command) {
-        command.execute(message, args);
-    }
+	const commandName = args.shift().toLowerCase();
+
+	// execute command
+	const command = client.commands.get(commandName);
+	if (command) {
+		command.execute(message, args);
+	}
 });
 
 client.login(config.token);
