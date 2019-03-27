@@ -1,16 +1,40 @@
+// imports
+const fs = require('fs');
 const Discord = require("discord.js");
-const client = new Discord.Client();
 
-client.login("token");
+// create client and collection
+const client = new Discord.Client();
+client.commands = new Discord.Collection();
+
+// import all files
+const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'));
+for (const file of commandFiles) {
+	const command = require(`./commands/${file}`);
+	client.commands.set(command.name, command);
+}
+
+// import configs 
+const config = require("./config.json");
 
 client.on("ready", () => {
-    console.log('Logged in as ${client.user.tag}!');
+    console.log('Ready');
 });
 
-client.on('message', msg => {
-    if (msg.content === 'ping') {
-        msg.reply('Pong!');
+const prefix = config.prefix;
+client.on('message', message => {
+    // check for Prefix
+    if (!message.content.startsWith(prefix) || message.author.bot) return;
+
+    // strip args and commands
+	const args = message.content.slice(prefix.length).split(/ +/);
+    const command = args.shift().toLowerCase();
+    
+    // Command List
+    if (command === "ping") {
+        client.commands.get('ping').execute(message, args);
+    } else if (command === 'kiss') {
+        client.commands.get('kiss').execute(message, args);
     }
 });
 
-client.login('token');
+client.login(config.token);
