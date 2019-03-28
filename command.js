@@ -1,4 +1,13 @@
 module.exports = ({ name, description, type, data, extraData }) => {
+	const command = { name, description };
+
+	// Use custom commands if they are defined
+	if (type === 'custom') {
+		command.execute = require(data);
+		return command;
+	}
+	
+	// Generate basic commands
 	let message;
 	if (type === 'text') {
 		message = data;
@@ -10,7 +19,6 @@ module.exports = ({ name, description, type, data, extraData }) => {
 		throw new Error(`Unsupported type: ${type}`);
 	}
 
-	const command = { name, description };
 	command.execute = (messageService, args) => {
 		messageService.channel.send(message);
 	};
