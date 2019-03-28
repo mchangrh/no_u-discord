@@ -20,6 +20,8 @@ config.commands = commandData;
 
 client.on('ready', () => {
 	console.log('Ready');
+	// set presence
+	client.user.setPresence({ game: { name: 'no u' }, status: 'online' })
 });
 
 
