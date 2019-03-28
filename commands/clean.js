@@ -1,33 +1,21 @@
-module.exports = (message, args) => {
+module.exports = async (message, args, config) => {
 	// start cleaning
-	message.channel.send('start clean')
-	// fetch messages
-	message.channel.fetchMessages()
-	// collect and filter through delOrNot
-	.then((messages) => {
-		return messages.filter((msg) => {
-			return delOrNot(msg);
+	message.channel.send('start clean');
+	try {
+		// fetch messages
+		const messages = await message.channel.fetchMessages();
+
+		// filter messages
+		const botRelatedMessages = messages.filter((msg) => {
+			const isCommand = msg.content.startsWith('!') || msg.content.startsWith(config.prefix);
+			return msg.author.bot || isCommand;
 		});
-	})
-	.then((collect) => {
-		bulkDel(collect, message);
-	})
-	.catch(console.error);
 
-	// wait to delete message
-	message.channel.fetchMessage(message.channel.lastMessageID)
-		.then(message => message.delete(5000))
-		.catch(console.error);
-}
-
-function bulkDel(botMessages, message) {
-	// lol just delete
-	message.channel.bulkDelete(botMessages)
-		.then(messages => message.channel.send(`Bulk deleted ${messages.size} messages`))
-		.catch(console.error);
-};
-
-function delOrNot(msg) {
-	const isCommand = msg.content.startsWith("!") || msg.content.startsWith("~");
-	return msg.author.bot || isCommand;
+		// delete messages
+		const deletedMessages = await message.channel.bulkDelete(botRelatedMessages);
+		const toDelete = await message.channel.send(`Bulk deleted ${deletedMessages.size} messages`);
+		toDelete.delete(5000);
+	} catch (err) {
+		console.error(err);
+	}
 }
