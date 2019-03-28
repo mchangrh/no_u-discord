@@ -10,7 +10,7 @@ const client = new Discord.Client();
 client.commands = new Discord.Collection();
 
 // generate commands from data files
-const commandData = yaml.safeLoad(fs.readFileSync(config.yml, 'utf8'));
+const commandData = yaml.safeLoad(fs.readFileSync(config.yaml, 'utf8'));
 commandData.forEach((commandDatum) => {
 	client.commands.set(commandDatum.name, commandFactory(commandDatum));
 });
