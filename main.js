@@ -10,7 +10,10 @@ const client = new Discord.Client();
 client.commands = new Discord.Collection();
 
 // generate commands from data files
-const commandData = yaml.safeLoad(fs.readFileSync(config.yaml, 'utf8'));
+const commandData = yaml.safeLoad(fs.readFileSync(config.yaml, 'utf8'))
+.sort((a, b) => {
+	return a.name.localeCompare(b.name);
+});
 commandData.forEach((commandDatum) => {
 	client.commands.set(commandDatum.name, commandFactory(commandDatum));
 });
