@@ -9,6 +9,9 @@ const config = require('../config.json');
 const client = new Discord.Client();
 client.commands = new Discord.Collection();
 
+// link commands to config
+config.commands = commandData;
+
 // generate commands from data files
 const commandData = yaml.safeLoad(fs.readFileSync(config.yaml, 'utf8'))
 .sort((a, b) => {
@@ -18,19 +21,17 @@ commandData.forEach((commandDatum) => {
 	client.commands.set(commandDatum.name, commandFactory(commandDatum));
 });
 
-// link commands to config
-config.commands = commandData;
-
 client.on('ready', () => {
 	console.log('Ready');
 	// set presence
-	client.user.setPresence({ game: { name: 'no u' }, status: 'online' })
+	client.user.setPresence({game: {name: config.name}, status: config.status})
 });
-
+// login
+client.login(config.token);
 
 const prefix = config.prefix;
 client.on('message', message => {
-	// check for Prefix
+	// check for Prefix or sent by self
 	if (!message.content.startsWith(prefix) || message.author.bot) return;
 
 	// strip args and commands
@@ -43,5 +44,3 @@ client.on('message', message => {
 		command.execute(message, args, config);
 	}
 });
-
-client.login(config.token);
