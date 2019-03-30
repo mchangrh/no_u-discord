@@ -7,7 +7,7 @@ module.exports = async (messageService, args, config) => {
 	try {
 		// get cat with promise
 		const cat = await request.get({
-			url: 'http://aws.rndom.cat/meow',
+			url: 'http://aws.random.cat/meow',
 			headers: { 'Content-Type': 'application/json' },
 			// retrieve as json
 			json: true,
