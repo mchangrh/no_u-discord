@@ -1,0 +1,24 @@
+{
+  "name": "no_u-discord",
+  "version": "0.1.0",
+  "description": "Discord bot with custom commands",
+  "main": "main.js",
+  "scripts": {
+    "test": "ping"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mchangrh/no_u-discord.git"
+  },
+  "keywords": [
+    "discord",
+    "discord-js",
+    "discord-bot"
+  ],
+  "author": "mchangrh, chjon",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/mchangrh/no_u-discord/issues"
+  },
+  "homepage": "https://github.com/mchangrh/no_u-discord#readme"
+}

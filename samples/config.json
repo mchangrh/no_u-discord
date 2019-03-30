@@ -1,0 +1,8 @@
+{
+    "autoDeleteDelay":5000,
+    "name": "no u dev",
+    "prefix":"~",
+    "status": "online",
+    "token":"supersecrettoken",
+    "yaml":"samples/config.yaml"
+}
