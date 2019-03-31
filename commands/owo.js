@@ -1,4 +1,4 @@
-module.exports = async (message, args, config) => {
+module.exports = async (message, args, flags, config) => {
     // faces 
     var faces = ["(・`ω´・)", ";;w;;", "owo", "UwU", ">w<", "^w^",
         "OwO", "Owo", "owO", "ÓwÓ", "ÕwÕ",

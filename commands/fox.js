@@ -2,7 +2,7 @@
 
 const request = require('request-promise-native');
 
-module.exports = async (messageService, args, config) => {
+module.exports = async (message, args, flags, config) => {
 	try {
 		// get fox with promise
 		const fox = await request.get({
@@ -12,7 +12,7 @@ module.exports = async (messageService, args, config) => {
 			json: true,
         });
 		// send fox in embed
-		messageService.channel.send({
+		message.channel.send({
 			files: [{ 
 				attachment: fox.image,
 			}],

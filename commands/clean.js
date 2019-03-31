@@ -1,4 +1,4 @@
-module.exports = async (message, args, config) => {
+module.exports = async (message, args, flags, config) => {
 	// start cleaning
 	message.channel.send('start clean');
 	try {
