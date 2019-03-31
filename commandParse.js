@@ -1,53 +1,34 @@
 'use strict';
 
-function validateEndsWith(arg, ending) {
-	const output = { ending, arg };
+function buildArgs(originalArgString) {
+	let argString = originalArgString;
+	const args = [];
 
-	if (arg.endsWith(ending)) {
-		output.ending = null;
-		output.arg = arg.substr(0, arg.length - 1);
-	}
-
-	if (new RegExp(`(?<!\\\\)${ending}`).test(output.arg)) {
-		throw new Error(`Invalid token: ${arg}`);
-	}
-
-	return output;
-}
-
-function buildArgs(argString) {
-	const argStrings = argString.split(/\s+/);
-
-	const { builtSoFar, args } = argStrings.reduce(({ quoteMark, builtSoFar, args }, arg) => {
-		// Validate arg
-		let validatedArg = arg;
-		if (!quoteMark) {
-			if (validatedArg.startsWith('\'')) {
-				const { arg, ending } = validateEndsWith(validatedArg.substr(1), '\'');
-				validatedArg = arg;
-				quoteMark = ending;
-			} else if (validatedArg.startsWith('\"')) {
-				const { arg, ending } = validateEndsWith(validatedArg.substr(1), '\"');
-				validatedArg = arg;
-				quoteMark = ending;
+	function getBoundArg(boundMarker) {
+		if (argString.startsWith(boundMarker)) {
+			let arg = argString.substr(boundMarker.length);
+			let splitIndex = arg.search(new RegExp(boundMarker));
+			if (splitIndex === -1) splitIndex = arg.length;
+			args.push(arg.substr(0, splitIndex));
+			argString = arg.substr(splitIndex + boundMarker.length);
+			if (argString.length && argString.search(/\s/)) {
+				throw new Error(`Illegal argument format: ${originalArgString}`);
 			}
+			argString = argString.trim();
+		}
+	}
+
+	while (argString.length) {
+		if (argString.startsWith('\'')) {
+			getBoundArg('\'');
+		} else if (argString.startsWith('\"')) {
+			getBoundArg('\"');
 		} else {
-			const { arg, ending } = validateEndsWith(validatedArg, quoteMark);
-			validatedArg = ' ' + arg;
-			quoteMark = ending;
+			let splitIndex = argString.search(/\s/);
+			if (splitIndex === -1) splitIndex = argString.length;
+			args.push(argString.substr(0, splitIndex));
+			argString = argString.substr(splitIndex + 1).trim();
 		}
-		
-		builtSoFar += validatedArg;
-		if (!quoteMark && builtSoFar.length) {
-			args.push(builtSoFar);
-			builtSoFar = '';
-		}
-
-		return { quoteMark, builtSoFar, args };
-	}, { quoteMark: null, builtSoFar: '', args: [] });
-
-	if (builtSoFar.length !== 0) {
-		args.push(builtSoFar);
 	}
 
 	return args;
