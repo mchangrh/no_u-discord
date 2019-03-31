@@ -1,5 +1,20 @@
 'use strict';
 
+function validateEndsWith(arg, ending) {
+	const output = { ending, arg };
+
+	if (arg.endsWith(ending)) {
+		output.ending = null;
+		output.arg = arg.substr(0, arg.length - 1);
+	}
+
+	if (new RegExp(`(?<!\\\\)${ending}`).test(output.arg)) {
+		throw new Error(`Invalid token: ${arg}`);
+	}
+
+	return output;
+}
+
 function buildArgs(argString) {
 	const argStrings = argString.split(/\s+/);
 
@@ -8,39 +23,18 @@ function buildArgs(argString) {
 		let validatedArg = arg;
 		if (!quoteMark) {
 			if (validatedArg.startsWith('\'')) {
-				quoteMark = '\'';
-				validatedArg = validatedArg.substr(1);
-				
-				if (validatedArg.endsWith('\'')) {
-					quoteMark = null;
-					validatedArg = validatedArg.substr(0, validatedArg.length - 1);
-				}
-
-				if (new RegExp(`(?<!\\\\)\'`).test(validatedArg)) {
-					throw new Error(`Invalid token: ${arg}`);
-				}
+				const { arg, ending } = validateEndsWith(validatedArg.substr(1), '\'');
+				validatedArg = arg;
+				quoteMark = ending;
 			} else if (validatedArg.startsWith('\"')) {
-				quoteMark = '\"';
-				validatedArg = validatedArg.substr(1);
-				
-				if (validatedArg.endsWith('\"')) {
-					quoteMark = null;
-					validatedArg = validatedArg.substr(0, validatedArg.length - 1);
-				}
-
-				if (new RegExp(`(?<!\\\\)\"`).test(validatedArg)) {
-					throw new Error(`Invalid token: ${arg}`);
-				}
+				const { arg, ending } = validateEndsWith(validatedArg.substr(1), '\"');
+				validatedArg = arg;
+				quoteMark = ending;
 			}
 		} else {
-			if (validatedArg.endsWith(quoteMark)) {
-				quoteMark = null;
-				validatedArg = ' ' + validatedArg.substr(0, validatedArg.length - 1);
-			}
-
-			if (new RegExp(`(?<!\\\\)${quoteMark}`).test(validatedArg)) {
-				throw new Error(`Invalid token: ${arg}`);
-			}
+			const { arg, ending } = validateEndsWith(validatedArg, quoteMark);
+			validatedArg = ' ' + arg;
+			quoteMark = ending;
 		}
 		
 		builtSoFar += validatedArg;
