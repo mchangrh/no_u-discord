@@ -1,37 +1,39 @@
 'use strict';
 
-function buildArgs(originalArgString) {
-	let argString = originalArgString;
-	const args = [];
+function splitQuoted(original) {
+	let remaining = original;
+	const splitStrings = [];
 
-	function getBoundArg(boundMarker) {
-		if (argString.startsWith(boundMarker)) {
-			let arg = argString.substr(boundMarker.length);
-			let splitIndex = arg.search(new RegExp(boundMarker));
-			if (splitIndex === -1) splitIndex = arg.length;
-			args.push(arg.substr(0, splitIndex));
-			argString = arg.substr(splitIndex + boundMarker.length);
-			if (argString.length && argString.search(/\s/)) {
-				throw new Error(`Illegal argument format: ${originalArgString}`);
+	function addQuoted(boundMarker) {
+		if (remaining.startsWith(boundMarker)) {
+			let arg = remaining.substr(boundMarker.length);
+			let splitIndex = arg.search(new RegExp(`(?<!\\\\)${boundMarker}`));
+			if (splitIndex === -1) {
+				splitIndex = arg.length;
 			}
-			argString = argString.trim();
+			splitStrings.push({ str: arg.substr(0, splitIndex), quoted: true });
+			remaining = arg.substr(splitIndex + boundMarker.length);
+			if (remaining.length && remaining.search(/\s/)) {
+				throw new Error(`Illegal argument format: ${original}`);
+			}
+			remaining = remaining.trim();
 		}
 	}
 
-	while (argString.length) {
-		if (argString.startsWith('\'')) {
-			getBoundArg('\'');
-		} else if (argString.startsWith('\"')) {
-			getBoundArg('\"');
+	while (remaining.length) {
+		if (remaining.startsWith('\'')) {
+			addQuoted('\'');
+		} else if (remaining.startsWith('\"')) {
+			addQuoted('\"');
 		} else {
-			let splitIndex = argString.search(/\s/);
-			if (splitIndex === -1) splitIndex = argString.length;
-			args.push(argString.substr(0, splitIndex));
-			argString = argString.substr(splitIndex + 1).trim();
+			let splitIndex = remaining.search(/\s/);
+			if (splitIndex === -1) splitIndex = remaining.length;
+			splitStrings.push({ str: remaining.substr(0, splitIndex), quoted: false });
+			remaining = remaining.substr(splitIndex + 1).trim();
 		}
 	}
 
-	return args;
+	return splitStrings;
 }
 
 module.exports = (rawMessage, config) => {
@@ -47,26 +49,33 @@ module.exports = (rawMessage, config) => {
 		return output;
 	}
 
+	// Split quoted
+	const splitStrings = splitQuoted(rawMessage);
+	const commandName = (splitStrings.shift() || { str: '' }).str;
+
 	// Check for valid command
-	const [commandWithArgs, ...flagsWithArgs] = rawMessage.split(new RegExp(`\\s+${flagPrefix}`));
-	if (commandWithArgs.length <= prefix.length) {
+	if (commandName.length <= prefix.length) {
 		throw new Error(`Invalid command: ${rawMessage}`);
 	}
 
 	// Build command
-	let commandSplitIndex = commandWithArgs.search(/\s/);
-	commandSplitIndex = (commandSplitIndex === -1) ? commandWithArgs.length : commandSplitIndex;
-	output.commandName = commandWithArgs.substr(prefix.length, commandSplitIndex - prefix.length);
-	output.args = buildArgs(commandWithArgs.substr(commandSplitIndex + 1));
+	output.commandName = commandName.substr(prefix.length);
+	while (splitStrings.length && !splitStrings[0].str.startsWith(flagPrefix)) {
+		output.args.push(splitStrings.shift().str);
+	}
 
 	// Build flags
-	output.flags = flagsWithArgs ? flagsWithArgs.reduce((flags, flagWithArgs) => {
-		let flagSplitIndex = flagWithArgs.search(/\s/);
-		flagSplitIndex = (flagSplitIndex === -1) ? flagWithArgs.length : flagSplitIndex;
-		const flag = flagWithArgs.substr(0, flagSplitIndex);
-		flags[flag] = buildArgs(flagWithArgs.substr(flagSplitIndex + 1));
-		return flags;
-	}, {}) : {};
+	const { flags } = splitStrings.reduce(({ lastFlag, flags }, { str, quoted }) => {
+		if (str.startsWith(flagPrefix) && !quoted) {
+			lastFlag = str.substr(flagPrefix.length);
+			flags[lastFlag] = [];
+		} else {
+			flags[lastFlag].push(str);
+		}
+
+		return { lastFlag, flags };
+	}, { lastFlag: null, flags: {} });
+	output.flags = flags;
 
 	return output;
 }
