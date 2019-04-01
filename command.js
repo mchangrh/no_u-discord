@@ -1,9 +1,24 @@
-module.exports = ({ name, description, type, data, extraData }) => {
+'use strict';
+
+const commandParse = require('./commandParse.js');
+
+module.exports = ({ name, description, type, data, extraData }, config) => {
 	const command = { name, description };
 
 	// Use custom commands if they are defined
 	if (type === 'custom') {
 		command.execute = require(data);
+		return command;
+	} else if (type === 'alias') {
+		const { commandName, args, flags } = commandParse(`${config.prefix}${data}`, config);
+		command.execute = (message, messageArgs, messageFlags, config) => {
+			config.commands.get(commandName).execute(
+				message,
+				args.concat(messageArgs),
+				{ ...flags, ...messageFlags },
+				config,
+			);
+		};
 		return command;
 	}
 	

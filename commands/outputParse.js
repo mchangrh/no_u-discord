@@ -1,4 +1,4 @@
-module.exports = (message, args, flags, { prefix, commands }) => {
+module.exports = (message, args, flags, config) => {
 	const output1 = args.reduce((output, arg) => {
 		return `${output}\n\t"${arg}",`
 	}, 'args: [') + '\n],';

@@ -6,7 +6,7 @@ const animals = {
 	cat: {
 		url: 'http://aws.random.cat/meow',
 		content: 'file',
-		loadMessage: 'retreiving cat...',
+		loadMessage: 'retrieving cat...',
 		errorHandler: (message, error) => {
 			if (error.statusCode) {
 				var errorcat = `https://http.cat/${error.statusCode}.jpg`;
