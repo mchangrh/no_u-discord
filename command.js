@@ -19,7 +19,7 @@ module.exports = ({ name, description, type, data, extraData }) => {
 		throw new Error(`Unsupported type: ${type}`);
 	}
 
-	command.execute = (messageService, args) => {
+	command.execute = (messageService, args, flags, config) => {
 		messageService.channel.send(message);
 	};
 

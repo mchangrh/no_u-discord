@@ -1,6 +1,7 @@
 // imports
 const Discord = require('discord.js');
 const commandFactory = require('./command.js');
+const commandParse = require('./commandParse');
 const fs = require('fs');
 const yaml = require('js-yaml');
 const config = require('../config.json');
@@ -29,17 +30,23 @@ client.on('ready', () => {
 
 const prefix = config.prefix;
 client.on('message', message => {
-	// check for Prefix or sent by self
-	if (!message.content.startsWith(prefix) || message.author.bot) return;
+	// check if sent by self
+	if (message.author.bot) return;
 
-	// strip args and commands
-	const args = message.content.slice(prefix.length).split(/ +/);
-	const commandName = args.shift().toLowerCase();
+	try {
+		// parse message
+		const { commandName, args, flags } = commandParse(message.content, config);
 
-	// execute command
-	const command = client.commands.get(commandName);
-	if (command) {
-		command.execute(message, args, config);
+		// check if command
+		if (!commandName) return;
+
+		// execute command
+		const command = client.commands.get(commandName);
+		if (command) {
+			command.execute(message, args, flags, config);
+		}
+	} catch (err) {
+		message.channel.send(err.message);
 	}
 });
 

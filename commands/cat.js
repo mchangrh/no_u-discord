@@ -2,8 +2,8 @@
 
 const request = require('request-promise-native');
 
-module.exports = async (messageService, args, config) => {
-	messageService.channel.send("retreiving cat...");
+module.exports = async (message, args, flags, config) => {
+	message.channel.send("retreiving cat...");
 	try {
 		// get cat with promise
 		const cat = await request.get({
@@ -13,7 +13,7 @@ module.exports = async (messageService, args, config) => {
 			json: true,
         });
 		// send cat in embed
-		messageService.channel.send({
+		message.channel.send({
 			files: [{ 
 				attachment: cat.file,
 			}],
@@ -24,7 +24,7 @@ module.exports = async (messageService, args, config) => {
 		if (error.statusCode) {
 			var errorcat = `https://http.cat/${error.statusCode}.jpg`;
 			// send error code cat
-			messageService.channel.send({
+			message.channel.send({
 				files: [{ attachment: errorcat,	}],
 			});
 		}

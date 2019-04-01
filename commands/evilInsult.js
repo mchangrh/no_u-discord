@@ -2,7 +2,7 @@
 
 const request = require('request-promise-native');
 
-module.exports = async (messageService, args, config) => {
+module.exports = async (message, args, flags, config) => {
 	try {
 		// get insult with promise
 		const { insult } = await request.get({
@@ -18,7 +18,7 @@ module.exports = async (messageService, args, config) => {
 		});
 
 		// send insult in embed
-		messageService.channel.send({
+		message.channel.send({
 			embed: { description: insult },
 		});
 	// catch error
