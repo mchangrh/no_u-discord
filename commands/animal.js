@@ -44,6 +44,10 @@ function randAnimal() {
 
 module.exports = async (message, args, flags, config) => {
 	const animalName = (args && args[0]) ? args[0] : randAnimal();
+	if (!animals[animalName]) {
+		throw new Error(`${animalName} is not a valid option.`);
+	}
+
 	const { url, query, content, loadMessage, errorHandler } = animals[animalName];
 
 	if (loadMessage) {

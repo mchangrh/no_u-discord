@@ -36,6 +36,10 @@ client.on('message', message => {
 	// check if sent by self
 	if (message.author.bot) return;
 
+	function handle(error) {
+		message.channel.send(error.message);
+	}
+
 	try {
 		// parse message
 		const { commandName, args, flags } = commandParse(message.content, config);
@@ -46,10 +50,13 @@ client.on('message', message => {
 		// execute command
 		const command = client.commands.get(commandName);
 		if (command) {
-			command.execute(message, args, flags, config);
+			command.execute(message, args, flags, config)
+			.catch((err) => {
+				handle(err);
+			});
 		}
 	} catch (err) {
-		message.channel.send(err.message);
+		handle(err);
 	}
 });
 
