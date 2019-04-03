@@ -53,7 +53,7 @@ module.exports = async (message, args, flags, config) => {
 	if (loadMessage) {
 		message.channel.send(loadMessage);
 	}
-	request.get({
+	return request.get({
 		url,
 		headers: { 'Content-Type': 'application/json' },
 		qs: query || {},

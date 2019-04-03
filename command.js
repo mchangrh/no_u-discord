@@ -35,7 +35,7 @@ module.exports = ({ name, description, type, data, extraData }, config) => {
 	}
 
 	command.execute = (messageService, args, flags, config) => {
-		messageService.channel.send(message);
+		return messageService.channel.send(message);
 	};
 
 	return command;

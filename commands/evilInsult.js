@@ -18,7 +18,7 @@ module.exports = async (message, args, flags, config) => {
 		});
 
 		// send insult in embed
-		message.channel.send({
+		return message.channel.send({
 			embed: { description: insult },
 		});
 	// catch error

@@ -11,5 +11,5 @@ module.exports = (message, args, flags, config) => {
 		return `${output}\n\t${flagOutput}`;
 	}, `${output1}\nflags: {`) + '\n},';
 
-	message.channel.send(output2);
+	return message.channel.send(output2);
 }

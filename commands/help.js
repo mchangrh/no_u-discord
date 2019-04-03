@@ -3,5 +3,5 @@ module.exports = (message, args, flags, { prefix, commands }) => {
 		return helpMessage.concat(`${prefix}${name}: ${description}\n`);
 	}, '');
 
-	message.channel.send(helpMessage);
+	return message.channel.send(helpMessage);
 }
