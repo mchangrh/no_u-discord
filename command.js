@@ -12,7 +12,7 @@ module.exports = ({ name, description, type, data, extraData }, config) => {
 	} else if (type === 'alias') {
 		const { commandName, args, flags } = commandParse(`${config.prefix}${data}`, config);
 		command.execute = (message, messageArgs, messageFlags, config) => {
-			config.commands.get(commandName).execute(
+			return config.commands.get(commandName).execute(
 				message,
 				args.concat(messageArgs),
 				{ ...flags, ...messageFlags },
