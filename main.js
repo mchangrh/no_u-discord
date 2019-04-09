@@ -1,6 +1,6 @@
 // imports
 const Discord = require('discord.js');
-const commandFactory = require('./command.js');
+const generateCommands = require('./command.js');
 const commandParse = require('./commandParse.js');
 const fs = require('fs');
 const yaml = require('js-yaml');
@@ -11,15 +11,9 @@ const client = new Discord.Client();
 client.commands = new Discord.Collection();
 
 // generate commands from data files
-yaml.safeLoad(fs.readFileSync(config.yaml, 'utf8'))
-.forEach((commandDatum) => {
-	client.commands.set(commandDatum.name, commandFactory(commandDatum, config));
-});
-
-// sort commands
-client.commands.array()
-.sort((a, b) => {
-	return a.name.localeCompare(b.name);
+generateCommands(yaml.safeLoad(fs.readFileSync(config.yaml, 'utf8')), config)
+.forEach((command) => {
+	client.commands.set(command.name, command);
 });
 
 // link commands to config
