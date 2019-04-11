@@ -25,7 +25,6 @@ client.on('ready', () => {
 	client.user.setPresence({game: {name: config.name}, status: config.status})
 });
 
-const prefix = config.prefix;
 client.on('message', message => {
 	// check if sent by self
 	if (message.author.bot) return;
