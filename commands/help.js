@@ -12,8 +12,23 @@ module.exports = (message, args, flags, config) => {
     maxLength: 1,
   }
 
+  const flagSchema = {
+    type: 'object',
+    required: true,
+    keys: {
+      listAll: {
+        type: 'array',
+        required: false,
+        itemSchema: { type: 'any' },
+        minLength: 0,
+        maxLength: 0,
+      }
+    },
+  }
+
   // Validate arguments
   validate(args, argSchema)
+  validate(flags, flagSchema)
 
   const { commands, helpCommandsPerPage, prefix } = config
   const commandArray = commands.array()

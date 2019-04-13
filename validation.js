@@ -39,8 +39,8 @@ function validate(toValidate, schema) {
       if (!Array.isArray(toValidate)) {
         throw new TypeValidationException(typeof toValidate, schema.type)
       }
-      const minLength = schema.minLength || 0
-      const maxLength = schema.maxLength || Infinity;
+      const minLength = schema.minLength === undefined ? 0 : schema.minLength;
+      const maxLength = schema.maxLength === undefined ? Infinity : schema.maxLength;
       if (toValidate.length < minLength || toValidate.length > maxLength) {
         throw new Error(`Invalid length: expected ${minLength} to ${maxLength} arguments; received ${toValidate.length}`)
       }
@@ -48,6 +48,23 @@ function validate(toValidate, schema) {
         validate(itemToValidate, schema.itemSchema);
       });
 
+      break;
+    case 'object':
+      if (!schema.keys || typeof schema.keys !== 'object') {
+        throw new SchemaException('expecting keys for type object')
+      }
+      if (typeof toValidate !== schema.type) {
+        throw new TypeValidationException(typeof toValidate, schema.type);
+      }
+      Object.keys(toValidate).forEach((key) => {
+        if (!schema.keys[key]) {
+          throw new Error(`Invalid key: could not find key ${key} in schema`);
+        }
+      });
+      Object.keys(schema.keys).forEach((key) => {
+        const keySchema = schema.keys[key];
+        validate(toValidate[key], keySchema);
+      });
       break;
     case 'integer':
       if (isNaN(toValidate)) {
@@ -68,6 +85,7 @@ function validate(toValidate, schema) {
         throw new Error(`Invalid value: expected value between ${minValue} and ${maxValue}; received ${argValue}`);
       }
       break;
+    case 'any':
     case 'string':
       break;
     default:
