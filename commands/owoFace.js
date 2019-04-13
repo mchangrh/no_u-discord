@@ -4,12 +4,15 @@ const enclosure = [['(', ')'], ['(。', '。)'], ['ღ(', 'ღ)'], ['', '']]
 
 function rand (array) { return array[Math.floor(Math.random() * array.length)] }
 
-const randEye = rand(eyes)
-const randMouth = rand(mouth)
-const randEnclosure = rand(enclosure)
-
-var owoFactory = (eye, mouth, enclosure) => {
+function owoFactory (eye, mouth, enclosure) {
   return `${enclosure[0]}${eye}${mouth}${eye}${enclosure[1]}`
 }
 
-module.exports = () => { return owoFactory(randEye, randMouth, randEnclosure) }
+module.exports = () => {
+  // random
+  const randEye = rand(eyes)
+  const randMouth = rand(mouth)
+  const randEnclosure = rand(enclosure)
+  // return
+  return owoFactory(randEye, randMouth, randEnclosure)
+}
