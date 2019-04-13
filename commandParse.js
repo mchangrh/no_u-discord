@@ -60,7 +60,7 @@ module.exports = (rawMessage, config) => {
 
 	// Build command
 	output.commandName = commandName.substr(prefix.length);
-	while (splitStrings.length && !splitStrings[0].str.startsWith(flagPrefix)) {
+	while (splitStrings.length && (splitStrings[0].quoted || !splitStrings[0].str.startsWith(flagPrefix))) {
 		output.args.push(splitStrings.shift().str);
 	}
 
