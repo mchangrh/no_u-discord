@@ -1,7 +1,7 @@
 // faces
-const owoFace = require('./owoFace.js')
-var face = owoFace()
-function owoify (text) {
+const { owoRandom } = require('./owoFace.js')
+
+const owoify = (text, face) => {
   // text replacement
   // replace with r or l with w
   text.replace(/(?:r|l)/g, 'w')
@@ -18,9 +18,10 @@ function owoify (text) {
 };
 
 module.exports = async (message, args, flags, config) => {
+  let face = owoRandom()
   return message.channel.send({
     embed: {
-      description: owoify(args.join(' ')),
+      description: owoify(args.join(' '), face),
       title: face
     }
   })
