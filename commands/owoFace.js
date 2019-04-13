@@ -9,7 +9,7 @@ const randEyeFactory = randomFactory(eyes)
 const randMouthFactory = randomFactory(mouth)
 const randEnclosureFactory = randomFactory(enclosure)
 
-const owoFactory = (eyesFactory, mouthFactory, enclosureFactory) => () => {
+const owoFactory = (eyesFactory, mouthFactory, enclosureFactory) => {
   let eye = eyesFactory()
   let mouth = mouthFactory()
   let enclosure = enclosureFactory()
