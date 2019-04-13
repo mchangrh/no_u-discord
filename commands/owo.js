@@ -4,7 +4,7 @@ const { owoRandom } = require('./owoFace.js')
 const owoify = (text, face) => {
   // text replacement
   // replace with r or l with w
-  text.replace(/(?:r|l)/g, 'w')
+  text = text.replace(/(?:r|l)/g, 'w')
     .replace(/(?:R|L)/g, 'W')
     // n[aeiou] with ny[aeiou]
     .replace(/n([aeiou])/g, 'ny$1')
@@ -15,7 +15,7 @@ const owoify = (text, face) => {
     // replace ! with faces
     .replace(/!+/g, ' ' + face + ' ')
   return text
-};
+}
 
 module.exports = async (message, args, flags, config) => {
   let face = owoRandom()
