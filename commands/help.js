@@ -1,26 +1,40 @@
-module.exports = (message, args, flags, config) => {
-  // Validate arguments
-  if (args.length > 1) {
-    throw new Error(`Expecting 0-1 arguments; received ${args.length}`)
-  } else if (args.length === 1) {
-    if (isNaN(args[0])) {
-      throw new Error(`Expecting numeric argument; received ${args[0]}`)
-    }
+const { validate } = require('../validation.js');
 
-    if (parseFloat(args[0]) % 1 !== 0) {
-      throw new Error(`Expecting integer argument; received ${args[0]}`)
-    }
+module.exports = (message, args, flags, config) => {
+  const argSchema = {
+    type: 'array',
+    required: true,
+    itemSchema: {
+      type: 'integer',
+      required: false,
+    },
+    minLength: 0,
+    maxLength: 1,
   }
+
+  // Validate arguments
+  validate(args, argSchema)
 
   const { commands, helpCommandsPerPage, prefix } = config
   const commandArray = commands.array()
   const totalPages = Math.floor((commandArray.length - 1) / helpCommandsPerPage) + 1
   const argPage = args.length ? parseInt(args[0]) : 1
-  const startPage = Math.min(Math.max(argPage, 1), totalPages)
-  const startIndex = (startPage - 1) * helpCommandsPerPage
+  let startIndex
+  let endIndex
+  let helpMessage
+  
+  if (flags['listAll']) {
+    startIndex = 0
+    endIndex = commandArray.length
+    helpMessage = ''
+  } else {
+    const startPage = Math.min(Math.max(argPage, 1), totalPages)
+    startIndex = (startPage - 1) * helpCommandsPerPage
+    endIndex = Math.min(startIndex + helpCommandsPerPage, commandArray.length)
+    helpMessage = `Page ${startPage}/${totalPages}:\n`
+  }
 
-  let helpMessage = `Page ${startPage}/${totalPages}:\n`
-  for (let i = startIndex; i < Math.min(startIndex + helpCommandsPerPage, commandArray.length); ++i) {
+  for (let i = startIndex; i < endIndex; ++i) {
     const { name, description } = commandArray[i]
     helpMessage += `${prefix}${name}: ${description}\n`
   }
