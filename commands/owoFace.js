@@ -17,5 +17,6 @@ const owoFactory = (eyesFactory, mouthFactory, enclosureFactory) => {
 }
 
 module.exports = (message, args, flags, config) => {
-  return owoFactory(randEyeFactory, randMouthFactory, randEnclosureFactory)
+  const owo = owoFactory(randEyeFactory, randMouthFactory, randEnclosureFactory)
+  return owo
 }
