@@ -28,7 +28,7 @@ function validate(toValidate, schema) {
       throw new TypeValidationException(typeof toValidate, schema.type)
     }
 
-    return;
+    return
   }
 
   switch (schema.type) {
@@ -39,33 +39,33 @@ function validate(toValidate, schema) {
       if (!Array.isArray(toValidate)) {
         throw new TypeValidationException(typeof toValidate, schema.type)
       }
-      const minLength = schema.minLength === undefined ? 0 : schema.minLength;
-      const maxLength = schema.maxLength === undefined ? Infinity : schema.maxLength;
+      const minLength = schema.minLength === undefined ? 0 : schema.minLength
+      const maxLength = schema.maxLength === undefined ? Infinity : schema.maxLength
       if (toValidate.length < minLength || toValidate.length > maxLength) {
         throw new Error(`Invalid length: expected ${minLength} to ${maxLength} arguments; received ${toValidate.length}`)
       }
       toValidate.forEach((itemToValidate) => {
-        validate(itemToValidate, schema.itemSchema);
-      });
+        validate(itemToValidate, schema.itemSchema)
+      })
 
-      break;
+      break
     case 'object':
       if (!schema.keys || typeof schema.keys !== 'object') {
         throw new SchemaException('expecting keys for type object')
       }
       if (typeof toValidate !== schema.type) {
-        throw new TypeValidationException(typeof toValidate, schema.type);
+        throw new TypeValidationException(typeof toValidate, schema.type)
       }
       Object.keys(toValidate).forEach((key) => {
         if (!schema.keys[key]) {
-          throw new Error(`Invalid key: could not find key ${key} in schema`);
+          throw new Error(`Invalid key: could not find key ${key} in schema`)
         }
-      });
+      })
       Object.keys(schema.keys).forEach((key) => {
-        const keySchema = schema.keys[key];
-        validate(toValidate[key], keySchema);
-      });
-      break;
+        const keySchema = schema.keys[key]
+        validate(toValidate[key], keySchema)
+      })
+      break
     case 'integer':
       if (isNaN(toValidate)) {
         throw new TypeValidationException(typeof toValidate, schema.type)
@@ -78,16 +78,16 @@ function validate(toValidate, schema) {
       if (isNaN(toValidate)) {
         throw new TypeValidationException(typeof toValidate, schema.type)
       }
-      const argValue = parseFloat(toValidate);
-      const minValue = schema.minValue === undefined ? -Infinity : schema.minValue;
-      const maxValue = schema.maxValue === undefined ? Infinity : schema.maxValue;
+      const argValue = parseFloat(toValidate)
+      const minValue = schema.minValue === undefined ? -Infinity : schema.minValue
+      const maxValue = schema.maxValue === undefined ? Infinity : schema.maxValue
       if (argValue < minValue || argValue > maxValue) {
-        throw new Error(`Invalid value: expected value between ${minValue} and ${maxValue}; received ${argValue}`);
+        throw new Error(`Invalid value: expected value between ${minValue} and ${maxValue}; received ${argValue}`)
       }
-      break;
+      break
     case 'any':
     case 'string':
-      break;
+      break
     default:
   }
 }
@@ -96,4 +96,4 @@ module.exports = {
   SchemaException,
   TypeValidationException,
   validate
-};
+}

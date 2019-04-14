@@ -1,4 +1,4 @@
-const { validate } = require('../validation.js');
+const { validate } = require('../validation.js')
 
 module.exports = (message, args, flags, config) => {
   const argSchema = {
