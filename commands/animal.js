@@ -1,6 +1,7 @@
 'use strict'
 
 const request = require('request-promise-native')
+const { DEFAULT_SCHEMAS, validate } = require('./../validation.js')
 
 const animals = {
   cat: {
@@ -43,6 +44,17 @@ function randAnimal () {
 }
 
 module.exports = async (message, args, flags, config) => {
+  const argSchema = {
+    type: 'array',
+    required: true,
+    itemSchema: { type: 'string' },
+    minLength: 0,
+    maxLength: 1,
+  }
+
+  validate(args, argSchema)
+  validate(flags, DEFAULT_SCHEMAS.emptyObject)
+
   const animalName = (args && args[0]) ? args[0] : randAnimal()
   if (!animals[animalName]) {
     throw new Error(`${animalName} is not a valid option.`)

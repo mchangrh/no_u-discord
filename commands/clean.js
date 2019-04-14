@@ -1,4 +1,11 @@
+'use strict'
+
+const { DEFAULT_SCHEMAS, validate } = require('./../validation.js')
+
 module.exports = async (message, args, flags, config) => {
+  validate(args, DEFAULT_SCHEMAS.emptyArray)
+  validate(flags, DEFAULT_SCHEMAS.emptyObject)
+
   // start cleaning
   message.channel.send('start clean')
   try {

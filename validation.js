@@ -1,3 +1,18 @@
+const DEFAULT_SCHEMAS = {
+  emptyArray: {
+    type: 'array',
+    required: true,
+    itemSchema: { type: 'any' },
+    minLength: 0,
+    maxLength: 0,
+  },
+  emptyObject: {
+    type: 'object',
+    required: true,
+    keys: {},
+  },
+}
+
 class SchemaException extends Error {
   constructor(message) {
     super(`Invalid schema: ${message}`)
@@ -95,5 +110,6 @@ function validate(toValidate, schema) {
 module.exports = {
   SchemaException,
   TypeValidationException,
-  validate
+  DEFAULT_SCHEMAS,
+  validate,
 }

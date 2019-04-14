@@ -1,6 +1,7 @@
 'use strict'
 
 const commandParse = require('./commandParse.js')
+const { DEFAULT_SCHEMAS, validate } = require('./validation.js')
 
 const commandFactory = ({ name, description, type, data, extraData }, config) => {
   const command = { name, description, baseArgs: [], baseFlags: {} }
@@ -24,6 +25,9 @@ const commandFactory = ({ name, description, type, data, extraData }, config) =>
   }
 
   command.execute = (messageService, args, flags, config) => {
+    validate(args, DEFAULT_SCHEMAS.emptyArray)
+    validate(flags, DEFAULT_SCHEMAS.emptyObject)
+
     return messageService.channel.send(message)
   }
 
