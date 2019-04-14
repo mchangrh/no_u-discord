@@ -1,5 +1,6 @@
 // faces
 const { owoRandom } = require('./owoFace.js')
+const { DEFAULT_SCHEMAS, validate } = require('./../validation.js')
 
 const owoify = (text, face) => {
   // text replacement
@@ -18,6 +19,15 @@ const owoify = (text, face) => {
 }
 
 module.exports = async (message, args, flags, config) => {
+  const argSchema = {
+    type: 'array',
+    required: true,
+    itemSchema: { type: 'string' },
+  }
+  
+  validate(args, argSchema)
+  validate(flags, DEFAULT_SCHEMAS.emptyObject)
+
   let face = owoRandom()
   return message.channel.send({
     embed: {
