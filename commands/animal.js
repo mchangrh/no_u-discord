@@ -47,7 +47,11 @@ module.exports = async (message, args, flags, config) => {
   const argSchema = {
     type: 'array',
     required: true,
-    itemSchema: { type: 'string' },
+    itemSchema: {
+      type: 'enum',
+      required: true,
+      values: Object.keys(animals),
+    },
     minLength: 0,
     maxLength: 1,
   }
@@ -56,10 +60,6 @@ module.exports = async (message, args, flags, config) => {
   validate(flags, DEFAULT_SCHEMAS.emptyObject)
 
   const animalName = (args && args[0]) ? args[0] : randAnimal()
-  if (!animals[animalName]) {
-    throw new Error(`${animalName} is not a valid option.`)
-  }
-
   const { url, query, content, loadMessage, errorHandler } = animals[animalName]
 
   if (loadMessage) {

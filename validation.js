@@ -80,6 +80,7 @@ function validate(toValidate, schema) {
         const keySchema = schema.keys[key]
         validate(toValidate[key], keySchema)
       })
+
       break
     case 'integer':
       if (isNaN(toValidate)) {
@@ -99,6 +100,19 @@ function validate(toValidate, schema) {
       if (argValue < minValue || argValue > maxValue) {
         throw new Error(`Invalid value: expected value between ${minValue} and ${maxValue}; received ${argValue}`)
       }
+
+      break
+    case 'enum':
+      if (!schema.values || !Array.isArray(schema.values)) {
+        throw new SchemaException('expecting values for type enum')
+      }
+      const found = schema.values.findIndex((value) => {
+        return value === toValidate;
+      });
+      if (found === -1) {
+        throw new Error(`Invalid argument: ${toValidate}`)
+      }
+
       break
     case 'any':
     case 'string':
