@@ -19,7 +19,7 @@ module.exports = async (message, args, flags, config) => {
     })
 
     // delete messages
-    const deletedMessages = await message.channel.bulkDelete(botRelatedMessages)
+    const deletedMessages = await message.channel.bulkDelete(botRelatedMessages, true)
     const toDelete = await message.channel.send(`Bulk deleted ${deletedMessages.size} messages`)
     return toDelete.delete(config.autoDeleteDelay)
   } catch (err) {
