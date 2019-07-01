@@ -1,0 +1,10 @@
+AUTO_DELETE_DELAY=4000
+FLAG_PREFIX=~
+HELP_COMMANDS_PER_PAGE=10
+NAME=no u devel
+PREFIX=+
+STATUS=away
+TOKEN=mysupersecrettoken
+YAML=../config.yaml
+WIPE_SECRET=secretadminphrase
+WIPE_CONFIRM=`Im Sure I Want To Do This I Understand The Consequences`
