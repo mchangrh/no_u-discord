@@ -47,7 +47,7 @@ const generateCommand = (toGenerate, commandDataByName, commandsByName, config) 
 
   if (type === 'alias') {
     commandDataByName[name].checked = true
-    const { commandName, args, flags } = commandParse(`${config.prefix}${data}`, config)
+    const { commandName, args, flags } = commandParse(`${process.env.PREFIX}${data}`, config)
 
     if (!commandsByName[commandName]) {
       if (!commandDataByName[commandName]) {

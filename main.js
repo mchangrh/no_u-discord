@@ -1,4 +1,6 @@
 // imports
+require('dotenv').config()
+require('enve')
 const Discord = require('discord.js')
 const generateCommands = require('./command.js')
 const commandParse = require('./commandParse.js')
@@ -11,7 +13,7 @@ const client = new Discord.Client()
 client.commands = new Discord.Collection()
 
 // generate commands from data files
-generateCommands(yaml.safeLoad(fs.readFileSync(config.yaml, 'utf8')), config)
+generateCommands(yaml.safeLoad(fs.readFileSync(process.env.YAML, 'utf8')), config)
   .forEach((command) => {
     client.commands.set(command.name, command)
   })
@@ -22,7 +24,7 @@ config.commands = client.commands
 client.on('ready', () => {
   console.log('Ready')
   // set presence
-  client.user.setPresence({ game: { name: config.name }, status: config.status })
+  client.user.setPresence({ game: { name: process.env.NAME }, status: process.env.STATUS })
 })
 
 client.on('message', message => {
@@ -54,4 +56,4 @@ client.on('message', message => {
 })
 
 // login
-client.login(config.token)
+client.login(process.env.TOKEN)

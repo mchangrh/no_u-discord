@@ -30,7 +30,9 @@ module.exports = (message, args, flags, config) => {
   validate(args, argSchema)
   validate(flags, flagSchema)
 
-  const { commands, helpCommandsPerPage, prefix } = config
+  const commands = config.commands
+  const helpCommandsPerPage = process.enve.HELP_COMMANDS_PER_PAGE
+  const prefix = process.env.PREFIX
   const commandArray = commands.array()
   const totalPages = Math.floor((commandArray.length - 1) / helpCommandsPerPage) + 1
   const argPage = args.length ? parseInt(args[0]) : 1
