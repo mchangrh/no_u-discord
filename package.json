@@ -23,6 +23,8 @@
   "homepage": "https://github.com/mchangrh/no_u-discord#readme",
   "dependencies": {
     "discord.js": "^11.4.2",
+    "dotenv": "^8.0.0",
+    "enve": "^1.0.2",
     "js-yaml": "^3.13.1",
     "request": "^2.88.0",
     "request-promise-native": "^1.0.7"
