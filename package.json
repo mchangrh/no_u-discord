@@ -1,6 +1,6 @@
 {
   "name": "no_u-discord",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Discord bot with custom commands",
   "main": "main.js",
   "scripts": {
@@ -26,7 +26,6 @@
     "dotenv": "^8.0.0",
     "enve": "^1.0.2",
     "js-yaml": "^3.13.1",
-    "request": "^2.88.0",
-    "request-promise-native": "^1.0.7"
+    "tiny-json-http": "^7.1.2"
   }
 }

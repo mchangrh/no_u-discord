@@ -1,6 +1,6 @@
 'use strict'
 
-const request = require('request-promise-native')
+var tiny = require('tiny-json-http')
 const { DEFAULT_SCHEMAS, validate } = require('./../validation.js')
 
 const animals = {
@@ -50,10 +50,10 @@ module.exports = async (message, args, flags, config) => {
     itemSchema: {
       type: 'enum',
       required: true,
-      values: Object.keys(animals),
+      values: Object.keys(animals)
     },
     minLength: 0,
-    maxLength: 1,
+    maxLength: 1
   }
 
   validate(args, argSchema)
@@ -65,15 +65,14 @@ module.exports = async (message, args, flags, config) => {
   if (loadMessage) {
     message.channel.send(loadMessage)
   }
-  return request.get({
+  return tiny.get({
     url,
     headers: { 'Content-Type': 'application/json' },
-    qs: query || {},
-    json: true
+    qs: query || {}
   })
     .then((animal) => {
       message.channel.send({
-        files: [{ 
+        files: [{
           attachment: animal[content]
         }]
       })
