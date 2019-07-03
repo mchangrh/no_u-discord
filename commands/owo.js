@@ -22,9 +22,9 @@ module.exports = async (message, args, flags, config) => {
   const argSchema = {
     type: 'array',
     required: true,
-    itemSchema: { type: 'string' },
+    itemSchema: { type: 'string' }
   }
-  
+
   validate(args, argSchema)
   validate(flags, DEFAULT_SCHEMAS.emptyObject)
 

@@ -6,10 +6,10 @@ module.exports = (message, args, flags, config) => {
     required: true,
     itemSchema: {
       type: 'integer',
-      required: false,
+      required: false
     },
     minLength: 0,
-    maxLength: 1,
+    maxLength: 1
   }
 
   const flagSchema = {
@@ -21,9 +21,9 @@ module.exports = (message, args, flags, config) => {
         required: false,
         itemSchema: { type: 'any' },
         minLength: 0,
-        maxLength: 0,
+        maxLength: 0
       }
-    },
+    }
   }
 
   // Validate arguments
@@ -39,7 +39,7 @@ module.exports = (message, args, flags, config) => {
   let startIndex
   let endIndex
   let helpMessage
-  
+
   if (flags['listAll']) {
     startIndex = 0
     endIndex = commandArray.length

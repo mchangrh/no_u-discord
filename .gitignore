@@ -1,8 +1,3 @@
-# Dependency directories
 node_modules/
-
-# Optional eslint cache
 .eslintcache
-
-# dotenv environment variables file
 .env

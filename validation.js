@@ -2,32 +2,34 @@ const DEFAULT_SCHEMAS = {
   emptyArray: {
     type: 'array',
     required: true,
-    itemSchema: { type: 'any' },
+    itemSchema: {
+      type: 'any'
+    },
     minLength: 0,
-    maxLength: 0,
+    maxLength: 0
   },
   emptyObject: {
     type: 'object',
     required: true,
-    keys: {},
-  },
+    keys: {}
+  }
 }
 
 class SchemaException extends Error {
-  constructor(message) {
+  constructor (message) {
     super(`Invalid schema: ${message}`)
     this.name = 'SchemaException'
   }
 }
 
 class TypeValidationException extends Error {
-  constructor(argType, schemaType) {
+  constructor (argType, schemaType) {
     super(`Invalid argument: expected type ${schemaType}; received type ${argType}`)
     this.name = 'TypeValidationException'
   }
 }
 
-function validate(toValidate, schema) {
+function validate (toValidate, schema) {
   if (!schema || !schema.type) {
     throw new SchemaException('expecting schema type')
   }
@@ -37,7 +39,7 @@ function validate(toValidate, schema) {
       throw new TypeValidationException(typeof toValidate, schema.type)
     }
   }
-  
+
   if ((toValidate === undefined || toValidate === null) && schema.type !== 'any') {
     if (schema.required) {
       throw new TypeValidationException(typeof toValidate, schema.type)
@@ -90,34 +92,34 @@ function validate(toValidate, schema) {
       if (parseFloat(toValidate) % 1 !== 0) {
         throw new TypeValidationException('float', schema.type)
       }
-    case 'number':
-      if (isNaN(toValidate)) {
-        throw new TypeValidationException(typeof toValidate, schema.type)
-      }
-      const argValue = parseFloat(toValidate)
-      const minValue = schema.minValue === undefined ? -Infinity : schema.minValue
-      const maxValue = schema.maxValue === undefined ? Infinity : schema.maxValue
-      if (argValue < minValue || argValue > maxValue) {
-        throw new Error(`Invalid value: expected value between ${minValue} and ${maxValue}; received ${argValue}`)
-      }
+      case 'number':
+        if (isNaN(toValidate)) {
+          throw new TypeValidationException(typeof toValidate, schema.type)
+        }
+        const argValue = parseFloat(toValidate)
+        const minValue = schema.minValue === undefined ? -Infinity : schema.minValue
+        const maxValue = schema.maxValue === undefined ? Infinity : schema.maxValue
+        if (argValue < minValue || argValue > maxValue) {
+          throw new Error(`Invalid value: expected value between ${minValue} and ${maxValue}; received ${argValue}`)
+        }
 
-      break
-    case 'enum':
-      if (!schema.values || !Array.isArray(schema.values)) {
-        throw new SchemaException('expecting values for type enum')
-      }
-      const found = schema.values.findIndex((value) => {
-        return value === toValidate;
-      });
-      if (found === -1) {
-        throw new Error(`Invalid argument: ${toValidate}`)
-      }
+        break
+      case 'enum':
+        if (!schema.values || !Array.isArray(schema.values)) {
+          throw new SchemaException('expecting values for type enum')
+        }
+        const found = schema.values.findIndex((value) => {
+          return value === toValidate
+        })
+        if (found === -1) {
+          throw new Error(`Invalid argument: ${toValidate}`)
+        }
 
-      break
-    case 'any':
-    case 'string':
-      break
-    default:
+        break
+      case 'any':
+      case 'string':
+        break
+      default:
   }
 }
 
@@ -125,5 +127,5 @@ module.exports = {
   SchemaException,
   TypeValidationException,
   DEFAULT_SCHEMAS,
-  validate,
+  validate
 }
