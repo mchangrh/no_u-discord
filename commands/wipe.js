@@ -5,7 +5,7 @@ const {
   validate
 } = require('../validation.js')
 
-module.exports = async (message, args, flags, config) => {
+module.exports = async (message, args, flags) => {
   const argSchema = {
     type: 'string',
     required: true,

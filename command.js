@@ -3,7 +3,7 @@
 const commandParse = require('./commandParse.js')
 const { DEFAULT_SCHEMAS, validate } = require('./validation.js')
 
-const commandFactory = ({ name, description, type, data, extraData }, config) => {
+const commandFactory = ({ name, description, type, data, extraData }) => {
   const command = { name, description, baseArgs: [], baseFlags: {} }
 
   // Use custom commands if they are defined
@@ -24,7 +24,7 @@ const commandFactory = ({ name, description, type, data, extraData }, config) =>
     throw new Error(`Unsupported type: ${type}`)
   }
 
-  command.execute = (messageService, args, flags, config) => {
+  command.execute = (messageService, args, flags) => {
     validate(args, DEFAULT_SCHEMAS.emptyArray)
     validate(flags, DEFAULT_SCHEMAS.emptyObject)
 
@@ -34,7 +34,7 @@ const commandFactory = ({ name, description, type, data, extraData }, config) =>
   return command
 }
 
-const generateCommand = (toGenerate, commandDataByName, commandsByName, config) => {
+const generateCommand = (toGenerate, commandDataByName, commandsByName) => {
   const { name, description, type, data } = toGenerate
 
   if (commandsByName[name]) {
@@ -47,13 +47,13 @@ const generateCommand = (toGenerate, commandDataByName, commandsByName, config) 
 
   if (type === 'alias') {
     commandDataByName[name].checked = true
-    const { commandName, args, flags } = commandParse(`${process.env.PREFIX}${data}`, config)
+    const { commandName, args, flags } = commandParse(`${process.env.PREFIX}${data}`)
 
     if (!commandsByName[commandName]) {
       if (!commandDataByName[commandName]) {
         throw new Error(`Missing expected command definition: ${commandName}`)
       }
-      generateCommand(commandDataByName[commandName].data, commandDataByName, commandsByName, config)
+      generateCommand(commandDataByName[commandName].data, commandDataByName, commandsByName)
     }
 
     commandsByName[name] = {
@@ -64,13 +64,13 @@ const generateCommand = (toGenerate, commandDataByName, commandsByName, config) 
       baseFlags: flags
     }
   } else {
-    commandsByName[name] = commandFactory(toGenerate, config)
+    commandsByName[name] = commandFactory(toGenerate)
   }
 
   delete commandDataByName[name]
 }
 
-const generateCommands = (commandData, config) => {
+const generateCommands = (commandData) => {
   // Key command data by name
   const commandDataByName = commandData.reduce(
     (commandDataByName, commandDatum) => {
@@ -83,7 +83,7 @@ const generateCommands = (commandData, config) => {
   // Generate commands
   const commandsByName = {}
   commandData.forEach((commandDatum) => {
-    generateCommand(commandDatum, commandDataByName, commandsByName, config)
+    generateCommand(commandDatum, commandDataByName, commandsByName)
   })
 
   // Generate command array
@@ -92,12 +92,12 @@ const generateCommands = (commandData, config) => {
       // Inject base args
       return {
         ...command,
-        execute: async (message, args, flags, config) => {
+        execute: async (message, args, flags, commands) => {
           return command.execute(
             message,
             command.baseArgs.concat(args),
             Object.assign({}, command.baseFlags, flags),
-            config
+            commands
           )
         }
       }

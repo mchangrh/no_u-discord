@@ -6,20 +6,16 @@ const generateCommands = require('./command.js')
 const commandParse = require('./commandParse.js')
 const fs = require('fs')
 const yaml = require('js-yaml')
-const config = require('../config.json')
 
 // create client and collection
 const client = new Discord.Client()
 client.commands = new Discord.Collection()
 
 // generate commands from data files
-generateCommands(yaml.safeLoad(fs.readFileSync(process.env.YAML, 'utf8')), config)
+generateCommands(yaml.safeLoad(fs.readFileSync(process.env.YAML, 'utf8')))
   .forEach((command) => {
     client.commands.set(command.name, command)
   })
-
-// link commands to config
-config.commands = client.commands
 
 client.on('ready', () => {
   console.log('Ready')
@@ -37,7 +33,7 @@ client.on('message', message => {
 
   try {
     // parse message
-    const { commandName, args, flags } = commandParse(message.content, config)
+    const { commandName, args, flags } = commandParse(message.content)
 
     // check if command
     if (!commandName) return
@@ -45,7 +41,7 @@ client.on('message', message => {
     // execute command
     const command = client.commands.get(commandName)
     if (command) {
-      command.execute(message, args, flags, config)
+      command.execute(message, args, flags, client.commands)
         .catch((err) => {
           handle(err)
         })

@@ -43,7 +43,7 @@ function randAnimal () {
   return animalNames[randIndex]
 }
 
-module.exports = async (message, args, flags, config) => {
+module.exports = async (message, args, flags) => {
   const argSchema = {
     type: 'array',
     required: true,

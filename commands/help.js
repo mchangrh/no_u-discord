@@ -1,6 +1,6 @@
 const { validate } = require('../validation.js')
 
-module.exports = (message, args, flags, config) => {
+module.exports = (message, args, flags, commands) => {
   const argSchema = {
     type: 'array',
     required: true,
@@ -30,7 +30,6 @@ module.exports = (message, args, flags, config) => {
   validate(args, argSchema)
   validate(flags, flagSchema)
 
-  const commands = config.commands
   const helpCommandsPerPage = process.enve.HELP_COMMANDS_PER_PAGE
   const prefix = process.env.PREFIX
   const commandArray = commands.array()

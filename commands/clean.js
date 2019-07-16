@@ -2,7 +2,7 @@
 
 const { DEFAULT_SCHEMAS, validate } = require('./../validation.js')
 
-module.exports = async (message, args, flags, config) => {
+module.exports = async (message, args, flags) => {
   validate(args, DEFAULT_SCHEMAS.emptyArray)
   validate(flags, DEFAULT_SCHEMAS.emptyObject)
 

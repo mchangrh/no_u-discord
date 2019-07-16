@@ -36,7 +36,7 @@ function splitQuoted (original) {
   return splitStrings
 }
 
-module.exports = (rawMessage, config) => {
+module.exports = (rawMessage) => {
   const { prefix, flagPrefix } = process.env
   const output = {
     commandName: null,
