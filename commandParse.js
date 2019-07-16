@@ -37,7 +37,7 @@ function splitQuoted (original) {
 }
 
 module.exports = (rawMessage, config) => {
-  const { prefix, flagPrefix } = config
+  const { prefix, flagPrefix } = process.env
   const output = {
     commandName: null,
     flags: {},
