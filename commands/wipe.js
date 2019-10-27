@@ -17,7 +17,7 @@ module.exports = async (message, args, flags) => {
   validate(flags, DEFAULT_SCHEMAS.emptyObject)
 
   // check if prompt is correct and secret phrase is correct
-  if (args && args[0] === process.env.WIPE_CONFIM.replace(/ /g, '').replace(/`/g, '') && args[1] === process.env.WIPE_SECRET) {
+  if (args && args[0] === process.env.WIPE_CONFIRM.replace(/ /g, '').replace(/`/g, '') && args[1] === process.env.WIPE_SECRET) {
     // start cleaning
     const startmsg = await message.channel.send('deleting your messages')
     try {
@@ -41,7 +41,7 @@ module.exports = async (message, args, flags) => {
   } else {
     // prompt to resend and delete messages
     const msg1 = await message.channel.send('this command wipes your messages. If you\'re sure you want to do this:')
-    const msg2 = await message.channel.send('resend with this phrase: ' + process.env.WIPE_CONFIM + ' but without spaces')
+    const msg2 = await message.channel.send('resend with this phrase: ' + process.env.WIPE_CONFIRM + ' but without spaces')
     const msg3 = await message.channel.send('followed by the secret code from the admins')
     msg1.delete(process.enve.AUTO_DELETE_DELAY * 5)
     msg2.delete(process.enve.AUTO_DELETE_DELAY * 5)
