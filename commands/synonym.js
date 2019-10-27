@@ -43,10 +43,7 @@ module.exports = async (message, args, flags) => {
             return synonym[0].substring(1, synonym[0].length - 1)
           }) : null
       }).catch((err) => {
-        if (err.statusCode === 301) {
-          return null
-        }
-        throw err
+        return null
       })
     }, {})
 
