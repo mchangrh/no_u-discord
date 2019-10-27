@@ -37,7 +37,7 @@ function splitQuoted (original) {
 }
 
 module.exports = (rawMessage) => {
-  const { prefix, flagPrefix } = process.env
+  const { prefix, flag_prefix } = process.env
   const output = {
     commandName: null,
     flags: {},
@@ -60,14 +60,14 @@ module.exports = (rawMessage) => {
 
   // Build command
   output.commandName = commandName.substr(prefix.length)
-  while (splitStrings.length && (splitStrings[0].quoted || !splitStrings[0].str.startsWith(flagPrefix))) {
+  while (splitStrings.length && (splitStrings[0].quoted || !splitStrings[0].str.startsWith(flag_prefix))) {
     output.args.push(splitStrings.shift().str)
   }
 
   // Build flags
   const { flags } = splitStrings.reduce(({ lastFlag, flags }, { str, quoted }) => {
-    if (str.startsWith(flagPrefix) && !quoted) {
-      lastFlag = str.substr(flagPrefix.length)
+    if (str.startsWith(flag_prefix) && !quoted) {
+      lastFlag = str.substr(flag_prefix.length)
       flags[lastFlag] = []
     } else {
       flags[lastFlag].push(str)

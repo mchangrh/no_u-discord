@@ -1,6 +1,7 @@
 const { validate } = require('../validation.js')
+const dbLayer = require('../dbLayer.js')
 
-module.exports = (message, args, flags, commands) => {
+module.exports = async (message, args, flags) => {
   const argSchema = {
     type: 'array',
     required: true,
@@ -32,7 +33,19 @@ module.exports = (message, args, flags, commands) => {
 
   const helpCommandsPerPage = process.enve.HELP_COMMANDS_PER_PAGE
   const prefix = process.env.PREFIX
-  const commandArray = commands.array()
+  const allCommands = await dbLayer.getAllCommands()
+  const commandArray = Object.values(allCommands)
+    .filter((command) => {
+      return command
+    }).sort((a, b) => {
+      if (a.name.toUpperCase() < b.name.toUpperCase()) {
+        return -1
+      } else if (a.name.toUpperCase() > b.name.toUpperCase()) {
+        return 1
+      } else {
+        return 0
+      }
+    })
   const totalPages = Math.floor((commandArray.length - 1) / helpCommandsPerPage) + 1
   const argPage = args.length ? parseInt(args[0]) : 1
   let startIndex
@@ -51,8 +64,10 @@ module.exports = (message, args, flags, commands) => {
   }
 
   for (let i = startIndex; i < endIndex; ++i) {
-    const { name, description } = commandArray[i]
-    helpMessage += `${prefix}${name}: ${description}\n`
+    if (commandArray[i]) {
+      const { name, description } = commandArray[i]
+      helpMessage += `${prefix}${name}: ${description}\n`
+    }
   }
 
   return message.channel.send(helpMessage)

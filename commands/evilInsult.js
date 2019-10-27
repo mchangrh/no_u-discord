@@ -9,7 +9,7 @@ module.exports = async (message, args, flags) => {
 
   try {
     // get insult with promise
-    const { insult } = await tiny.get({
+    const { body } = await tiny.get({
       url: 'https://evilinsult.com/generate_insult.php',
       // language english
       // retrieve as json
@@ -21,7 +21,7 @@ module.exports = async (message, args, flags) => {
 
     // send insult in embed
     return message.channel.send({
-      embed: { description: insult }
+      embed: { description: JSON.parse(body).insult }
     })
   // catch error
   } catch (err) { console.error(err) }
