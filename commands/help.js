@@ -35,7 +35,9 @@ module.exports = async (message, args, flags) => {
   const prefix = process.env.PREFIX
   const allCommands = await dbLayer.getAllCommands()
   const commandArray = Object.values(allCommands)
-    .sort((a, b) => {
+    .filter((command) => {
+      return command
+    }).sort((a, b) => {
       if (a.name.toUpperCase() < b.name.toUpperCase()) {
         return -1
       } else if (a.name.toUpperCase() > b.name.toUpperCase()) {
