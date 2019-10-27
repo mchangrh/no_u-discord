@@ -70,10 +70,10 @@ module.exports = async (message, args, flags) => {
     headers: { 'Content-Type': 'application/json' },
     qs: query || {}
   })
-    .then((animal) => {
-      message.channel.send({
+    .then(({ body }) => {
+      return message.channel.send({
         files: [{
-          attachment: animal[content]
+          attachment: body[content]
         }]
       })
     })

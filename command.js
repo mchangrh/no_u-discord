@@ -1,6 +1,5 @@
 'use strict'
 
-const commandParse = require('./commandParse.js')
 const { DEFAULT_SCHEMAS, validate } = require('./validation.js')
 
 const commandFactory = ({ name, description, type, data, extraData }) => {
@@ -34,77 +33,4 @@ const commandFactory = ({ name, description, type, data, extraData }) => {
   return command
 }
 
-const generateCommand = (toGenerate, commandDataByName, commandsByName) => {
-  const { name, description, type, data } = toGenerate
-
-  if (commandsByName[name]) {
-    return
-  }
-
-  if (commandDataByName[name].checked) {
-    throw new Error(`Circular alias dependency: ${name}`)
-  }
-
-  if (type === 'alias') {
-    commandDataByName[name].checked = true
-    const { commandName, args, flags } = commandParse(`${process.env.PREFIX}${data}`)
-
-    if (!commandsByName[commandName]) {
-      if (!commandDataByName[commandName]) {
-        throw new Error(`Missing expected command definition: ${commandName}`)
-      }
-      generateCommand(commandDataByName[commandName].data, commandDataByName, commandsByName)
-    }
-
-    commandsByName[name] = {
-      name,
-      description,
-      execute: commandsByName[commandName].execute,
-      baseArgs: args,
-      baseFlags: flags
-    }
-  } else {
-    commandsByName[name] = commandFactory(toGenerate)
-  }
-
-  delete commandDataByName[name]
-}
-
-const generateCommands = (commandData) => {
-  // Key command data by name
-  const commandDataByName = commandData.reduce(
-    (commandDataByName, commandDatum) => {
-      const { name } = commandDatum
-      commandDataByName[name] = { checked: false, data: commandDatum }
-      return commandDataByName
-    }, {}
-  )
-
-  // Generate commands
-  const commandsByName = {}
-  commandData.forEach((commandDatum) => {
-    generateCommand(commandDatum, commandDataByName, commandsByName)
-  })
-
-  // Generate command array
-  return Object.values(commandsByName)
-    .map((command) => {
-      // Inject base args
-      return {
-        ...command,
-        execute: async (message, args, flags, commands) => {
-          return command.execute(
-            message,
-            command.baseArgs.concat(args),
-            Object.assign({}, command.baseFlags, flags),
-            commands
-          )
-        }
-      }
-    })
-    .sort((a, b) => {
-      return a.name.localeCompare(b.name)
-    })
-}
-
-module.exports = generateCommands
+module.exports = commandFactory
