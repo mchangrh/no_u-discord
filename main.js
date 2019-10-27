@@ -7,9 +7,8 @@ const dbLayer = require('./dbLayer.js')
 
 dbLayer.init()
 
-// create client and collection
+// create client
 const client = new Discord.Client()
-client.commandCache = new Discord.Collection()
 
 client.on('ready', () => {
   console.log('Ready')
@@ -36,7 +35,7 @@ client.on('message', message => {
     dbLayer.getCommand(commandName)
       .then((command) => {
         if (command) {
-          return command.execute(message, args, flags, client.commands)
+          return command.execute(message, args, flags)
         }
       }).catch((err) => {
         handle(err)
