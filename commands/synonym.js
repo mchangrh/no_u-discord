@@ -19,7 +19,7 @@ module.exports = async (message, args, flags) => {
   validate(args, argSchema)
   validate(flags, DEFAULT_SCHEMAS.emptyObject)
 
-  const messageToConvert = args.join(" ")
+  const messageToConvert = args.join(" ").toLowerCase()
   const wordsToConvert = messageToConvert.split(" ")
     .map((wordToConvert) => {
       return wordToConvert.toUpperCase()
@@ -41,9 +41,9 @@ module.exports = async (message, args, flags) => {
         return synonymHtmlList ? synonymHtmlList.map((synonymHtml) => {
             const synonym = synonymHtml.match(/>.*</)
             return synonym[0].substring(1, synonym[0].length - 1)
-          }) : null
+          }) : []
       }).catch((err) => {
-        return null
+        return []
       })
     }, {})
 
@@ -51,13 +51,14 @@ module.exports = async (message, args, flags) => {
   for (var i = 0; i < Object.keys(synonymPromiseMap).length; ++i) {
     const key = Object.keys(synonymPromiseMap)[i]
     synonymMap[key] = await synonymPromiseMap[key]
+    synonymMap[key].push(key.toLowerCase())
   }
 
   const newMessage = wordsToConvert
     .reduce((messageSoFar, wordToConvert) => {
       // Choose synonym at random
       const synonymList = synonymMap[wordToConvert]
-      const synonym = synonymList ? synonymList[Math.floor(Math.random() * synonymList.length)] : wordToConvert.toLowerCase()
+      const synonym = synonymList[Math.floor(Math.random() * synonymList.length)]
       return `${messageSoFar} ${synonym}`
     }, "")
 
