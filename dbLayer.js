@@ -33,7 +33,7 @@ const commandFactory = ({ name, description, type, data, extraData }, dependents
     let message
     switch (type) {
       case 'alias':
-        const { commandName, args, flags } = commandParse(`${process.env.prefix}${data}`)
+        const { commandName, args, flags } = commandParse(`${process.env.PREFIX}${data}`)
         if (dependents[commandName]) {
             return Promise.reject(new Error(`Circular alias reference detected at ${command.name}`))
         }
