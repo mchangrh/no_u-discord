@@ -37,7 +37,7 @@ function splitQuoted (original) {
 }
 
 module.exports = (rawMessage) => {
-  const { prefix, flag_prefix } = process.env
+  const { PREFIX, FLAG_PREFIX } = process.env
   const output = {
     commandName: null,
     flags: {},
@@ -45,7 +45,7 @@ module.exports = (rawMessage) => {
   }
 
   // Check whether the message is a command
-  if (!rawMessage.startsWith(prefix)) {
+  if (!rawMessage.startsWith(PREFIX)) {
     return output
   }
 
@@ -54,20 +54,20 @@ module.exports = (rawMessage) => {
   const commandName = (splitStrings.shift() || { str: '' }).str
 
   // Check for valid command
-  if (commandName.length <= prefix.length) {
+  if (commandName.length <= PREFIX.length) {
     throw new Error(`Invalid command: ${rawMessage}`)
   }
 
   // Build command
-  output.commandName = commandName.substr(prefix.length)
-  while (splitStrings.length && (splitStrings[0].quoted || !splitStrings[0].str.startsWith(flag_prefix))) {
+  output.commandName = commandName.substr(PREFIX.length)
+  while (splitStrings.length && (splitStrings[0].quoted || !splitStrings[0].str.startsWith(FLAG_PREFIX))) {
     output.args.push(splitStrings.shift().str)
   }
 
   // Build flags
   const { flags } = splitStrings.reduce(({ lastFlag, flags }, { str, quoted }) => {
-    if (str.startsWith(flag_prefix) && !quoted) {
-      lastFlag = str.substr(flag_prefix.length)
+    if (str.startsWith(FLAG_PREFIX) && !quoted) {
+      lastFlag = str.substr(FLAG_PREFIX.length)
       flags[lastFlag] = []
     } else {
       flags[lastFlag].push(str)
