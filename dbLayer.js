@@ -122,7 +122,7 @@ const getCommand = (commandName, dependents = {}, bypassCache = false) => {
       return cache[commandName] 
     }
   }).catch((err) => {
-    handle(err)
+    throw err
   })
 }
 
