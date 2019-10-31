@@ -5,7 +5,10 @@ const jsSHA = require("jssha")
 const {
   DEFAULT_SCHEMAS,
   validate
-} = require('./../validation.js')
+} = require('../validation.js')
+
+// totp parameter
+const otpResultLength = 6
 
 // dec2hex
 function dec2hex(s) {
@@ -17,15 +20,12 @@ function hex2dec(s) {
 }
 // leftpad
 function leftpad(str, len, pad) {
-  if (len + 1 >= str.length) {
-    str = Array(len + 1 - str.length).join(pad) + str
-  }
-  return str
+  return str.padStart(len, pad)
 }
 
 function getOtp(key, now = new Date().getTime()) {
   const epoch = Math.round(now / 1000.0)
-  const time = leftpad(dec2hex(Math.floor(epoch / 30)), 16, "0")
+  const time = leftPad(dec2hex(Math.floor(epoch / 30), 16, "0"))
   // HMAC object
   var shaObj = new jsSHA("SHA-1", "HEX")
   shaObj.setHMACKey(key, "HEX")
@@ -35,10 +35,10 @@ function getOtp(key, now = new Date().getTime()) {
   const offset = hex2dec(hmac.substring(hmac.length - 1))
   var otp = (hex2dec(hmac.substr(offset * 2, 8)) & hex2dec("7fffffff")) + ""
   // pad and cutoff
-  if (otp.length > 6) {
-    otp = otp.substr(otp.length - 6, 6)
+  if (otp.length > otpResultLength) {
+    otp = otp.substr(otp.length - otpResultLength, otpResultLength)
   } else {
-    otp = leftpad(otp, 6, "0")
+    otp = leftpad(otp, otpResultLength, "0")
   }
   return otp
 }
