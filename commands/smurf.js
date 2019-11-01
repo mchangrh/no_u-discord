@@ -25,7 +25,7 @@ function leftpad(str, len, pad) {
 
 function getOtp(key, now = new Date().getTime()) {
   const epoch = Math.round(now / 1000.0)
-  const time = leftPad(dec2hex(Math.floor(epoch / 30), 16, "0"))
+  const time = leftpad(dec2hex(Math.floor(epoch / 30), 16, "0"))
   // HMAC object
   var shaObj = new jsSHA("SHA-1", "HEX")
   shaObj.setHMACKey(key, "HEX")
