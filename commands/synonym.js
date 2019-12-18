@@ -62,5 +62,7 @@ module.exports = async (message, args, flags) => {
       return `${messageSoFar} ${synonym}`
     }, "")
 
-  return message.channel.send(newMessage)
+  return message.channel.send({
+    embed: { description: newMessage }
+  })
 }
